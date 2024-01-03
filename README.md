@@ -2,6 +2,8 @@
 
 A quick tool to create properties for your WPF and Avalonia controls. This creates WPF DependencyProperty objects, and Avalonia StyledProperty and DirectProperty objects.
 
+![image](https://github.com/JaykeBird/PropertyBuilder/assets/1905005/a3c3e511-5183-4126-a44c-69bc3fb238c4)
+
 ## How to use / Quick Overview
 
 There are five tabs present.
