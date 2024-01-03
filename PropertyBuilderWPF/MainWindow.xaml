@@ -70,9 +70,9 @@ Text="The other method, which I've personally seen used in Avalonia's own contro
                     <StackPanel Margin="5">
                         <TextBlock Margin="2">Created by Jayke R. Huempfner</TextBlock>
                         <TextBlock Margin="2">December 2023 / January 2024</TextBlock>
-                        <TextBlock Margin="2">Based upon WPF Property Builder tool created in 2022</TextBlock>
+                        <TextBlock Margin="2">Based upon WPF Property Builder tool I created in 2022</TextBlock>
                         <TextBlock Margin="2"/>
-                        <TextBlock Margin="2">© 2023-2024 Jayke R. Huempfner</TextBlock>
+                        <flat:LinkTextBlock AutoSetLinkFromText="True" Margin="2">https://github.com/JaykeBird/PropertyBuilder</flat:LinkTextBlock>
                         <flat:LinkTextBlock AutoSetLinkFromText="True" Margin="2">https://jaykebird.com/software</flat:LinkTextBlock>
                         <TextBlock Margin="2"/>
                         <TextBlock Margin="2">Licensed under MIT License</TextBlock>

@@ -163,11 +163,4 @@ namespace PropertyBuilderWPF
 
         #endregion
     }
-
-    public enum BulkPropertyGenerationType
-    {
-        WPF_DependencyProperty = 0,
-        Avalonia_StyledProperty = 1,
-        Avalonia_DirectProperty = 2
-    }
 }
