@@ -1,0 +1,94 @@
+﻿<flat:FlatWindow x:Class="PropertyBuilderWPF.MainWindow" x:Name="window"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PropertyBuilderWPF"
+        xmlns:ct="clr-namespace:PropertyBuilderWPF.ChangeTheme"
+        xmlns:flat="clr-namespace:SolidShineUi;assembly=SolidShineUi"
+        mc:Ignorable="d"
+        Title="Property Builder" Height="650" Width="600" 
+        Loaded="window_Loaded" Closing="window_Closing" Topmost="{Binding ElementName=btnKeepOnTop, Path=IsSelected}" >
+    <flat:FlatWindow.TopRightElement>
+        <flat:FlatButton SelectOnClick="True" TransparentBack="True" x:Name="btnKeepOnTop" BorderSelectionThickness="1" ColorScheme="{Binding ElementName=window, Path=ColorScheme}" Margin="0,1" >
+            <StackPanel Orientation="Horizontal" >
+                <TextBlock Text="Keep on Top" />
+            </StackPanel>
+        </flat:FlatButton>
+    </flat:FlatWindow.TopRightElement>
+    <Grid>
+        <flat:TabControl Margin="3" ColorScheme="{Binding ElementName=window, Path=ColorScheme}" TabMinWidth="50" x:Name="tabControl" >
+            <flat:TabItem CanClose="False" Title="Build a Property" ShowIcon="False" Padding="6,2" >
+                <local:MainPropertyGenerator x:Name="mpg" Margin="3" />
+            </flat:TabItem>
+            <flat:TabItem CanClose="False" Title="Bulk Build" ShowIcon="False" Padding="6,2" >
+                <local:BulkPropertyGenerator x:Name="bpg" Margin="3" />
+            </flat:TabItem>
+            <flat:TabItem CanClose="False" Title="Resources" ShowIcon="False" Padding="6,2" >
+                <ScrollViewer VerticalScrollBarVisibility="Auto" >
+                    <StackPanel Margin="8,5">
+                        <TextBlock Margin="0,5,0,2" Text="PerformAs" FontWeight="Bold" />
+                        <TextBlock TextWrapping="Wrap" Margin="0,3"
+Text="PerformAs is an extension method added in Solid Shine UI 2.0, which is used to perform actions on DependencyObjects when a property's value has changed, with less code than otherwise needed." />
+                        <TextBlock Margin="0,3" Text="To add this to your program, use the code below (credit not required, but appreciated!):" />
+                        <local:CodeDisplay x:Name="cdPerformAs" Margin="5,3" MaxHeight="200" />
+                        <TextBlock Margin="0,15,0,2" Text="Avalonia - Listening to Property Value Changes" FontWeight="Bold" />
+                        <TextBlock TextWrapping="Wrap" Margin="0,3"
+Text="In Avalonia, you can't define a property change listener when defining a StyledProperty like you can in WPF. Instead, you can listen to property changes via some other methods." />
+                        <TextBlock TextWrapping="Wrap" Margin="0,3"
+Text="One method, closest to WPF's, is to use the StyledProperty's Changed property, and add a listener via the AddClassHandler function. A link describing this is included in the section below." />
+                        <TextBlock TextWrapping="Wrap" Margin="0,3"
+Text="The other method, which I've personally seen used in Avalonia's own controls, is to override the OnPropertyChanged function. A code example for doing this is here:" />
+                        <local:CodeDisplay x:Name="cdAvaloniaChanged" Margin="5,3" />
+                        <TextBlock Margin="0,15,0,2" Text="Online Resources" FontWeight="Bold" />
+                        <TextBlock TextWrapping="Wrap" Margin="0,3" Text="Here are some online resources about dependency properties and Avalonia's property system." />
+                        <StackPanel Orientation="Vertical" Margin="3,3" x:Name="stkLinks" />
+                    </StackPanel>
+                </ScrollViewer>
+            </flat:TabItem>
+            <flat:TabItem CanClose="False" Title="Options" ShowIcon="False" Padding="6,2" >
+                <StackPanel Margin="8,5">
+                    <TextBlock Margin="0,5,0,2" Text="Color Scheme" FontWeight="Bold" />
+                    <TextBlock Text="Change the appearance of this program" />
+                    <ct:ColorSchemeButton ColorScheme="{Binding ElementName=tabControl, Path=ColorScheme}" x:Name="btnThemeEdit" Margin="5,3" 
+                                          Click="btnThemeEdit_Click" Title="Change theme..." ShowTitle="True" HorizontalAlignment="Left" />
+                    <TextBlock Margin="0,5,0,2" Text="Editor Appearance" FontWeight="Bold" />
+                    <TextBlock Text="Set how the code display/edit windows appear" />
+                    <flat:FlatButton ColorScheme="{Binding ElementName=tabControl, Path=ColorScheme}" x:Name="btnEditorFont" 
+                                     Content="Change Font..." Margin="5,3,0,1" HorizontalAlignment="Left" Click="btnEditorFont_Click" />
+                    <flat:CheckBox Content="Show line numbers" Margin="5,3" ColorScheme="{Binding ElementName=tabControl, Path=ColorScheme}" x:Name="chkLineNumbers" 
+                                   CheckChanged="chkLineNumbers_CheckChanged" />
+                    <flat:CheckBox Content="Word wrap" Margin="5,3" ColorScheme="{Binding ElementName=tabControl, Path=ColorScheme}" x:Name="chkWordWrap" CheckChanged="chkWordWrap_CheckChanged" />
+                    <flat:CheckBox Content="Highlight the currently selected line" Margin="5,3" ColorScheme="{Binding ElementName=tabControl, Path=ColorScheme}" x:Name="chkLineHighlight" 
+                                   CheckChanged="chkLineHighlight_CheckChanged" />
+                    <flat:CheckBox Content="Use syntax coloring/highlighting" Margin="5,3" ColorScheme="{Binding ElementName=tabControl, Path=ColorScheme}" x:Name="chkSyntaxColoring" 
+                                   CheckChanged="chkSyntaxColoring_CheckChanged" />
+                </StackPanel>
+            </flat:TabItem>
+            <flat:TabItem CanClose="False" Title="About This Program" ShowIcon="False" Padding="6,2" >
+                <ScrollViewer>
+                    <StackPanel Margin="5">
+                        <TextBlock Margin="2">Created by Jayke R. Huempfner</TextBlock>
+                        <TextBlock Margin="2">December 2023 / January 2024</TextBlock>
+                        <TextBlock Margin="2">Based upon WPF Property Builder tool created in 2022</TextBlock>
+                        <TextBlock Margin="2"/>
+                        <TextBlock Margin="2">© 2023-2024 Jayke R. Huempfner</TextBlock>
+                        <flat:LinkTextBlock AutoSetLinkFromText="True" Margin="2">https://jaykebird.com/software</flat:LinkTextBlock>
+                        <TextBlock Margin="2"/>
+                        <TextBlock Margin="2">Licensed under MIT License</TextBlock>
+                        <TextBlock Margin="2"/>
+                        <TextBlock Margin="2" FontWeight="Bold" >Referenced/Third-Party Libraries:</TextBlock>
+                        <TextBlock Margin="1"/>
+                        <TextBlock Margin="2">AvalonEdit</TextBlock>
+                        <TextBlock Margin="2">By SharpDevelop/icsharpcode Team (licensed under MIT License)</TextBlock>
+                        <flat:LinkTextBlock AutoSetLinkFromText="True" Margin="2">https://github.com/icsharpcode/AvalonEdit</flat:LinkTextBlock>
+                        <TextBlock Margin="1"/>
+                        <TextBlock Margin="2">Solid Shine UI</TextBlock>
+                        <TextBlock Margin="2">By Jayke R. Huempfner, other contributors (licensed under MIT License)</TextBlock>
+                        <flat:LinkTextBlock AutoSetLinkFromText="True" Margin="2">https://jaykebird.com/software/ssui</flat:LinkTextBlock>
+                    </StackPanel>
+                </ScrollViewer>
+            </flat:TabItem>
+        </flat:TabControl>
+    </Grid>
+</flat:FlatWindow>
