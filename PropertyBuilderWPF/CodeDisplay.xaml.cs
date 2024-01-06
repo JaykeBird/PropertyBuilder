@@ -1,30 +1,22 @@
-﻿using ICSharpCode.AvalonEdit.Document;
-using ICSharpCode.AvalonEdit.Highlighting;
-using ICSharpCode.AvalonEdit.Highlighting.Xshd;
-using ICSharpCode.ILSpy;
-using PropertyBuilderWPF.Highlighting;
-using SolidShineUi;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using ICSharpCode.AvalonEdit.Highlighting;
+using ICSharpCode.AvalonEdit.Highlighting.Xshd;
+using ICSharpCode.ILSpy;
+using PropertyBuilderWPF.Highlighting;
+using SolidShineUi;
 
 namespace PropertyBuilderWPF
 {
     /// <summary>
-    /// Interaction logic for CodeDisplay.xaml
+    /// A control for displaying some C# code with an AvalonEdit editor, with a Copy button at the bottom for copying in data.
     /// </summary>
     public partial class CodeDisplay : UserControl
     {
@@ -34,14 +26,14 @@ namespace PropertyBuilderWPF
 
             Loaded += CodeDisplay_Loaded;
 
-
+            // add on the bracket highlighter
             bhr = new BracketHighlightRenderer(editText.TextArea.TextView);
             cbr = new CSharpBracketSearcher();
 
             editText.TextArea.TextView.BackgroundRenderers.Add(bhr);
             editText.TextArea.Caret.PositionChanged += editText_PositionChanged;
+
             editText.Options.HighlightCurrentLine = HighlightCurrentLine;
-            SetSyntaxHighlighting();
         }
 
         //public DocumentTextWriter TextWriter { get; private set; }
@@ -187,11 +179,6 @@ namespace PropertyBuilderWPF
                     ? HighlightingLoader.Load(App.CsharpHighlighter, HighlightingManager.Instance)
                     : HighlightingLoader.Load(App.NoneHighlighter, HighlightingManager.Instance);
             }
-
-            //TextMarkerService tms = new TextMarkerService(editText.TextArea.TextView);
-            //editText.TextArea.TextView.BackgroundRenderers.Add(tms);
-            //editText.TextArea.TextView.LineTransformers.Add(tms);
-            
         }
 
         private void btnCopy_Click(object sender, RoutedEventArgs e)
