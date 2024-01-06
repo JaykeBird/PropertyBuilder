@@ -19,16 +19,12 @@
             <RowDefinition Height="3*" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="4*"/>
-            <ColumnDefinition Width="20"/>
             <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="10"/>
+            <ColumnDefinition Width="4*"/>
             <ColumnDefinition Width="40"/>
         </Grid.ColumnDefinitions>
-        <local:CodeDisplay Grid.Column="2" Grid.RowSpan="8" x:Name="viewText" UseSyntaxHighlighting="{Binding ElementName=control, Path=UseSyntaxHighlighting}"
-                           EditorFontFamily="{Binding ElementName=control, Path=EditorFontFamily}" EditorFontSize="{Binding ElementName=control, Path=EditorFontSize}"
-                           EditorFontStyle="{Binding ElementName=control, Path=EditorFontStyle}" EditorFontWeight="{Binding ElementName=control, Path=EditorFontWeight}"
-                           ShowLineNumbers="{Binding ElementName=control, Path=ShowLineNumbers}" WordWrap="{Binding ElementName=control, Path=WordWrap}"
-                           HighlightCurrentLine="{Binding ElementName=control, Path=HighlightCurrentLine}" />
+        <local:CodeDisplay Grid.Column="2" Grid.RowSpan="8" x:Name="viewText" />
         <TextBlock HorizontalAlignment="Left" Grid.Row="1" Margin="12,0" Text="Property Name:" VerticalAlignment="Center"/>
         <TextBlock HorizontalAlignment="Left" Grid.Row="3" Margin="12,0" Text="Property Type:" VerticalAlignment="Center"/>
         <TextBlock HorizontalAlignment="Left" Grid.Row="5" Margin="12,0" Text="Default Value:" VerticalAlignment="Center"/>

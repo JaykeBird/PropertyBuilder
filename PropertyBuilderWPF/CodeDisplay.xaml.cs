@@ -1,6 +1,5 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,6 +11,8 @@ using ICSharpCode.AvalonEdit.Highlighting.Xshd;
 using ICSharpCode.ILSpy;
 using PropertyBuilderWPF.Highlighting;
 using SolidShineUi;
+
+using Binding = System.Windows.Data.Binding;
 
 namespace PropertyBuilderWPF
 {
@@ -48,8 +49,28 @@ namespace PropertyBuilderWPF
 
         private void CodeDisplay_Loaded(object sender, RoutedEventArgs e)
         {
-            if (DesignerProperties.GetIsInDesignMode(this)) return;
-            //throw new NotImplementedException();
+            // the designer didn't like the SetSyntaxHighlighting() method... but I fixed it by adding on some null checks
+            //if (DesignerProperties.GetIsInDesignMode(this)) return;
+
+            // let's just bind directly to the Settings object
+            Binding fontFamilyBinding = new(nameof(Settings.EditorFontFamily)) { Source = App.AppSettings };
+            Binding fontSizeBinding = new(nameof(Settings.EditorFontSize)) { Source = App.AppSettings };
+            Binding fontStyleBinding = new(nameof(Settings.EditorFontStyle)) { Source = App.AppSettings };
+            Binding fontWeightBinding = new(nameof(Settings.EditorFontWeight)) { Source = App.AppSettings };
+            Binding lineNumbersBinding = new(nameof(Settings.ShowLineNumbers)) { Source = App.AppSettings };
+            Binding wordWrapBinding = new(nameof(Settings.WordWrap)) { Source = App.AppSettings };
+            Binding highlightBinding = new(nameof(Settings.HighlightCurrentLine)) { Source = App.AppSettings };
+            Binding syntaxColorBinding = new(nameof(Settings.UseSyntaxHighlighting)) { Source = App.AppSettings };
+
+            SetBinding(EditorFontFamilyProperty, fontFamilyBinding);
+            SetBinding(EditorFontSizeProperty, fontSizeBinding);
+            SetBinding(EditorFontStyleProperty, fontStyleBinding);
+            SetBinding(EditorFontWeightProperty, fontWeightBinding);
+            SetBinding(ShowLineNumbersProperty, lineNumbersBinding);
+            SetBinding(WordWrapProperty, wordWrapBinding);
+            SetBinding(HighlightCurrentLineProperty, highlightBinding);
+            SetBinding(UseSyntaxHighlightingProperty, syntaxColorBinding);
+
             SetSyntaxHighlighting();
         }
 
