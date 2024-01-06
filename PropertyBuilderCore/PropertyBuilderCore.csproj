@@ -6,6 +6,16 @@
     <Nullable>enable</Nullable>
     <RootNamespace>PropertyBuilder</RootNamespace>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <Authors>Jayke R. Huempfner (JaykeBird)</Authors>
+    <Description>The core library used for building WPF and Avalonia properties.</Description>
+    <Copyright>(C) 2023-2024 Jayke R. Huempfner (JaykeBird)</Copyright>
+    <PackageProjectUrl>https://github.com/JaykeBird/PropertyBuilder</PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/JaykeBird/PropertyBuilder</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Title>PropertyBuilder for WPF/Avalonia</Title>
+    <Product>PropertyBuilder for WPF/Avalonia</Product>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -17,5 +27,12 @@
     <IsTrimmable>True</IsTrimmable>
     <IsAotCompatible>True</IsAotCompatible>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
 </Project>

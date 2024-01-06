@@ -6,6 +6,16 @@
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<UseWPF>true</UseWPF>
+		<Title>PropertyBuilder for WPF/Avalonia</Title>
+		<Authors>Jayke R. Huempfner (JaykeBird)</Authors>
+		<Description>A property builder tool for WPF and Avalonia properties.</Description>
+		<Copyright>(C) 2023-2024 Jayke R. Huempfner (JaykeBird)</Copyright>
+		<PackageProjectUrl>https://github.com/JaykeBird/PropertyBuilder</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/JaykeBird/PropertyBuilder</RepositoryUrl>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<RepositoryType>git</RepositoryType>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<Product>PropertyBuilder for WPF/Avalonia</Product>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -21,6 +31,13 @@
 		<EmbeddedResource Include="PerformAs.txt" />
 		<EmbeddedResource Include="Highlighting\CSharp.xshd" />
 		<EmbeddedResource Include="Highlighting\None.xshd" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="..\README.md">
+	    <Pack>True</Pack>
+	    <PackagePath>\</PackagePath>
+	  </None>
 	</ItemGroup>
 	
 	<ItemGroup>
