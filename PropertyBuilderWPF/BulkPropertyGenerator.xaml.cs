@@ -22,15 +22,6 @@ namespace PropertyBuilderWPF
         Binding OwnerTypeBinding;
         Binding PropertyTypeBinding;
 
-        Binding fontFamilyBinding;
-        Binding fontSizeBinding;
-        Binding fontStyleBinding;
-        Binding fontWeightBinding;
-        Binding lineNumbersBinding;
-        Binding wordWrapBinding;
-        Binding highlightBinding;
-        Binding syntaxColorBinding;
-
         public BulkPropertyGenerator()
         {
             InitializeComponent();
