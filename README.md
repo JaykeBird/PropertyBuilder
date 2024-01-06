@@ -44,8 +44,7 @@ I believe this will make my workflow a little bit faster, especially when it com
 
 ## Future Plans
 
-1. Redo how the binding and dependency properties work in the GUI. I could probably heavily reduce the amount of bindings and extra properties that I have by instead directly binding to the Settings object.
-2. Build an Avalonia GUI version of this (after Solid Shine UI 2.0 releases)
+1. Build an Avalonia GUI version of this (after Solid Shine UI 2.0 releases)
 
 ## License / Credits
 
