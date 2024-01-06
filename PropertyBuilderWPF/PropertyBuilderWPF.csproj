@@ -1,73 +1,40 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>net8.0-windows7.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <UseWPF>true</UseWPF>
-  </PropertyGroup>
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net8.0-windows7.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<UseWPF>true</UseWPF>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="Highlighting\Syntax\**" />
-    <EmbeddedResource Remove="Highlighting\Syntax\**" />
-    <None Remove="Highlighting\Syntax\**" />
-    <Page Remove="Highlighting\Syntax\**" />
-  </ItemGroup>
+	<ItemGroup>
+		<None Remove="AvaloniaPropertyChanged.txt" />
+		<None Remove="Highlighting\CSharp.xshd" />
+		<None Remove="Highlighting\None.xshd" />
+		<None Remove="Images\ExitColor.png" />
+		<None Remove="PerformAs.txt" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Compile Remove="Highlighting\TypeSystem\ApplyAttributeTypeVisitor.cs" />
-    <Compile Remove="Highlighting\TypeSystem\DecompilerTypeSystem.cs" />
-    <Compile Remove="Highlighting\TypeSystem\FunctionPointerType.cs" />
-    <Compile Remove="Highlighting\TypeSystem\IDecompilerTypeSystem.cs" />
-    <Compile Remove="Highlighting\TypeSystem\Implementation\AttributeListBuilder.cs" />
-    <Compile Remove="Highlighting\TypeSystem\Implementation\CustomAttribute.cs" />
-    <Compile Remove="Highlighting\TypeSystem\Implementation\DecimalConstantHelper.cs" />
-    <Compile Remove="Highlighting\TypeSystem\Implementation\DefaultAttribute.cs" />
-    <Compile Remove="Highlighting\TypeSystem\Implementation\MetadataEvent.cs" />
-    <Compile Remove="Highlighting\TypeSystem\Implementation\MetadataField.cs" />
-    <Compile Remove="Highlighting\TypeSystem\Implementation\MetadataMethod.cs" />
-    <Compile Remove="Highlighting\TypeSystem\Implementation\MetadataNamespace.cs" />
-    <Compile Remove="Highlighting\TypeSystem\Implementation\MetadataParameter.cs" />
-    <Compile Remove="Highlighting\TypeSystem\Implementation\MetadataProperty.cs" />
-    <Compile Remove="Highlighting\TypeSystem\Implementation\MetadataTypeDefinition.cs" />
-    <Compile Remove="Highlighting\TypeSystem\Implementation\MetadataTypeParameter.cs" />
-    <Compile Remove="Highlighting\TypeSystem\Implementation\PinnedType.cs" />
-    <Compile Remove="Highlighting\TypeSystem\Implementation\SimpleCompilation.cs" />
-    <Compile Remove="Highlighting\TypeSystem\MetadataModule.cs" />
-    <Compile Remove="Highlighting\TypeSystem\TypeProvider.cs" />
-    <Compile Remove="Highlighting\TypeSystem\TypeUtils.cs" />
-  </ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Include="AvaloniaPropertyChanged.txt" />
+		<EmbeddedResource Include="PerformAs.txt" />
+		<EmbeddedResource Include="Highlighting\CSharp.xshd" />
+		<EmbeddedResource Include="Highlighting\None.xshd" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<Resource Include="Images\ExitColor.png" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <None Remove="AvaloniaPropertyChanged.txt" />
-    <None Remove="Highlighting\CSharp.xshd" />
-    <None Remove="Highlighting\None.xshd" />
-    <None Remove="Images\ExitColor.png" />
-    <None Remove="PerformAs.txt" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="AvalonEdit" Version="6.3.0.90" />
+		<PackageReference Include="SolidShineUi" Version="1.9.7" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <EmbeddedResource Include="AvaloniaPropertyChanged.txt" />
-    <EmbeddedResource Include="PerformAs.txt" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\PropertyBuilderCore\PropertyBuilderCore.csproj" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <EmbeddedResource Include="Highlighting\CSharp.xshd" />
-    <EmbeddedResource Include="Highlighting\None.xshd" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="AvalonEdit" Version="6.3.0.90" />
-    <PackageReference Include="SolidShineUi" Version="1.9.7" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\PropertyBuilderCore\PropertyBuilderCore.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Resource Include="Images\ExitColor.png" />
-  </ItemGroup>
 
 </Project>
