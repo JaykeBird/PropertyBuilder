@@ -50,12 +50,12 @@ Text="The other method, which I've personally seen used in Avalonia's own contro
                 <StackPanel Margin="8,5">
                     <TextBlock Margin="0,5,0,2" Text="Color Scheme" FontWeight="Bold" />
                     <TextBlock Text="Change the appearance of this program" />
-                    <ct:ColorSchemeButton ColorScheme="{Binding ElementName=tabControl, Path=ColorScheme}" x:Name="btnThemeEdit" Margin="5,3" 
+                    <ct:ColorSchemeButton ColorScheme="{Binding ElementName=tabControl, Path=ColorScheme}" x:Name="btnThemeEdit" Margin="5" 
                                           Click="btnThemeEdit_Click" Title="Change theme..." ShowTitle="True" HorizontalAlignment="Left" />
-                    <TextBlock Margin="0,5,0,2" Text="Editor Appearance" FontWeight="Bold" />
-                    <TextBlock Text="Set how the code display/edit windows appear" />
-                    <flat:FlatButton ColorScheme="{Binding ElementName=tabControl, Path=ColorScheme}" x:Name="btnEditorFont" 
-                                     Content="Change Font..." Margin="5,3,0,1" HorizontalAlignment="Left" Click="btnEditorFont_Click" />
+                    <TextBlock Margin="0,12,0,2" Text="Editor Appearance" FontWeight="Bold" />
+                    <TextBlock Text="Set how the code display/edit panes appear" />
+                    <flat:FlatButton ColorScheme="{Binding ElementName=tabControl, Path=ColorScheme}" x:Name="btnEditorFont" MinWidth="100"
+                                     Content="Change Font..." Margin="5,5,0,1" HorizontalAlignment="Left" Click="btnEditorFont_Click" />
                     <flat:CheckBox Content="Show line numbers" Margin="5,3" ColorScheme="{Binding ElementName=tabControl, Path=ColorScheme}" x:Name="chkLineNumbers" 
                                    CheckChanged="chkLineNumbers_CheckChanged" />
                     <flat:CheckBox Content="Word wrap" Margin="5,3" ColorScheme="{Binding ElementName=tabControl, Path=ColorScheme}" x:Name="chkWordWrap" CheckChanged="chkWordWrap_CheckChanged" />

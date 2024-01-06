@@ -7,8 +7,6 @@
 /// object's methods and events, in a manner that also satisfies .NET's nullability feature.
 /// <para/>
 /// If the DependencyObject is null or isn't of type <typeparamref name="T"/>, then the action does not run.
-/// <para/>
-/// Created by Jayke R. Huempfner (JaykeBird) for <a href="https://github.com/JaykeBird/ssui">Solid Shine UI</a>.
 /// </remarks>
 /// <typeparam name="T">The type of the object to cast to.</typeparam>
 /// <param name="dp">The dependency object to cast from.</param>
@@ -34,8 +32,6 @@ public static void PerformAs<T>(this DependencyObject dp, Action<T> action)
 /// <para/>
 /// If the DependencyObject is null or isn't of type <typeparamref name="T"/>, or if <paramref name="newValue"/> isn't 
 /// of type <typeparamref name="TValue"/>, then the action does not run.
-/// <para/>
-/// Created by Jayke R. Huempfner (JaykeBird) for <a href="https://github.com/JaykeBird/ssui">Solid Shine UI</a>.
 /// </remarks>
 /// <typeparam name="T">The type of the object to cast to.</typeparam>
 /// <typeparam name="TValue">The type of the value object to cast to.</typeparam>
