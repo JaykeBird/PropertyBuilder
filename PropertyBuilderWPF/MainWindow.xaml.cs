@@ -67,43 +67,7 @@ namespace PropertyBuilderWPF
 
             mpg.SetBinding(MainPropertyGenerator.ColorSchemeProperty, csBinding);
             bpg.SetBinding(BulkPropertyGenerator.ColorSchemeProperty, csBinding);
-
-            //Binding fontFamilyBinding = new(nameof(Settings.EditorFontFamily)) { Source = App.AppSettings };
-            //Binding fontSizeBinding = new(nameof(Settings.EditorFontSize)) { Source = App.AppSettings };
-            //Binding fontStyleBinding = new(nameof(Settings.EditorFontStyle)) { Source = App.AppSettings };
-            //Binding fontWeightBinding = new(nameof(Settings.EditorFontWeight)) { Source = App.AppSettings };
-            //Binding lineNumbersBinding = new(nameof(Settings.ShowLineNumbers)) { Source = App.AppSettings };
-            //Binding wordWrapBinding = new(nameof(Settings.WordWrap)) { Source = App.AppSettings };
-            //Binding highlightBinding = new(nameof(Settings.HighlightCurrentLine)) { Source = App.AppSettings };
-            //Binding syntaxColorBinding = new(nameof(Settings.UseSyntaxHighlighting)) { Source = App.AppSettings };
-
-            //mpg.SetBinding(MainPropertyGenerator.EditorFontFamilyProperty, fontFamilyBinding);
-            //mpg.SetBinding(MainPropertyGenerator.EditorFontSizeProperty, fontSizeBinding);
-            //mpg.SetBinding(MainPropertyGenerator.EditorFontStyleProperty, fontStyleBinding);
-            //mpg.SetBinding(MainPropertyGenerator.EditorFontWeightProperty, fontWeightBinding);
-            //mpg.SetBinding(MainPropertyGenerator.ShowLineNumbersProperty, lineNumbersBinding);
-            //mpg.SetBinding(MainPropertyGenerator.WordWrapProperty, wordWrapBinding);
-            //mpg.SetBinding(MainPropertyGenerator.HighlightCurrentLineProperty, highlightBinding);
-            //mpg.SetBinding(MainPropertyGenerator.UseSyntaxHighlightingProperty, syntaxColorBinding);
-
-            //cdPerformAs.SetBinding(CodeDisplay.EditorFontFamilyProperty, fontFamilyBinding);
-            //cdPerformAs.SetBinding(CodeDisplay.EditorFontSizeProperty, fontSizeBinding);
-            //cdPerformAs.SetBinding(CodeDisplay.EditorFontStyleProperty, fontStyleBinding);
-            //cdPerformAs.SetBinding(CodeDisplay.EditorFontWeightProperty, fontWeightBinding);
-            //cdPerformAs.SetBinding(CodeDisplay.ShowLineNumbersProperty, lineNumbersBinding);
-            //cdPerformAs.SetBinding(CodeDisplay.WordWrapProperty, wordWrapBinding);
-            //cdPerformAs.SetBinding(CodeDisplay.HighlightCurrentLineProperty, highlightBinding);
-            //cdPerformAs.SetBinding(CodeDisplay.UseSyntaxHighlightingProperty, syntaxColorBinding);
             cdPerformAs.SetBinding(CodeDisplay.ColorSchemeProperty, csBinding);
-
-            //cdAvaloniaChanged.SetBinding(CodeDisplay.EditorFontFamilyProperty, fontFamilyBinding);
-            //cdAvaloniaChanged.SetBinding(CodeDisplay.EditorFontSizeProperty, fontSizeBinding);
-            //cdAvaloniaChanged.SetBinding(CodeDisplay.EditorFontStyleProperty, fontStyleBinding);
-            //cdAvaloniaChanged.SetBinding(CodeDisplay.EditorFontWeightProperty, fontWeightBinding);
-            //cdAvaloniaChanged.SetBinding(CodeDisplay.ShowLineNumbersProperty, lineNumbersBinding);
-            //cdAvaloniaChanged.SetBinding(CodeDisplay.WordWrapProperty, wordWrapBinding);
-            //cdAvaloniaChanged.SetBinding(CodeDisplay.HighlightCurrentLineProperty, highlightBinding);
-            //cdAvaloniaChanged.SetBinding(CodeDisplay.UseSyntaxHighlightingProperty, syntaxColorBinding);
             cdAvaloniaChanged.SetBinding(CodeDisplay.ColorSchemeProperty, csBinding);
 
             chkLineNumbers.SetBinding(CheckBox.IsCheckedProperty, new Binding(nameof(Settings.ShowLineNumbers)) { Source = App.AppSettings, Mode = BindingMode.TwoWay });
@@ -156,65 +120,6 @@ namespace PropertyBuilderWPF
 
             stkLinks.Children.Add(ltb);
         }
-
-        #endregion
-
-        #region Code Editor Visuals
-        //public bool ShowLineNumbers { get => (bool)GetValue(ShowLineNumbersProperty); set => SetValue(ShowLineNumbersProperty, value); }
-
-        ///// <summary>The backing dependency property for <see cref="ShowLineNumbers"/>. See the related property for details.</summary>
-        //public static DependencyProperty ShowLineNumbersProperty
-        //    = DependencyProperty.Register("ShowLineNumbers", typeof(bool), typeof(MainWindow),
-        //    new FrameworkPropertyMetadata(true));
-
-        //public FontFamily EditorFontFamily { get => (FontFamily)GetValue(EditorFontFamilyProperty); set => SetValue(EditorFontFamilyProperty, value); }
-
-        ///// <summary>The backing dependency property for <see cref="FontFamily"/>. See the related property for details.</summary>
-        //public static DependencyProperty EditorFontFamilyProperty
-        //    = DependencyProperty.Register("EditorFontFamily", typeof(FontFamily), typeof(MainWindow),
-        //    new FrameworkPropertyMetadata(new FontFamily("Consolas")));
-
-        //public double EditorFontSize { get => (double)GetValue(EditorFontSizeProperty); set => SetValue(EditorFontSizeProperty, value); }
-
-        ///// <summary>The backing dependency property for <see cref="EditorFontSize"/>. See the related property for details.</summary>
-        //public static DependencyProperty EditorFontSizeProperty
-        //    = DependencyProperty.Register("EditorFontSize", typeof(double), typeof(MainWindow),
-        //    new FrameworkPropertyMetadata(12.0));
-
-        //public FontWeight EditorFontWeight { get => (FontWeight)GetValue(EditorFontWeightProperty); set => SetValue(EditorFontWeightProperty, value); }
-
-        ///// <summary>The backing dependency property for <see cref="EditorFontWeight"/>. See the related property for details.</summary>
-        //public static DependencyProperty EditorFontWeightProperty
-        //    = DependencyProperty.Register("EditorFontWeight", typeof(FontWeight), typeof(MainWindow),
-        //    new FrameworkPropertyMetadata(FontWeights.Normal));
-
-        //public FontStyle EditorFontStyle { get => (FontStyle)GetValue(EditorFontStyleProperty); set => SetValue(EditorFontStyleProperty, value); }
-
-        ///// <summary>The backing dependency property for <see cref="EditorFontStyle"/>. See the related property for details.</summary>
-        //public static DependencyProperty EditorFontStyleProperty
-        //    = DependencyProperty.Register("EditorFontStyle", typeof(FontStyle), typeof(MainWindow),
-        //    new FrameworkPropertyMetadata(FontStyles.Normal));
-
-        //public bool WordWrap { get => (bool)GetValue(WordWrapProperty); set => SetValue(WordWrapProperty, value); }
-
-        ///// <summary>The backing dependency property for <see cref="WordWrap"/>. See the related property for details.</summary>
-        //public static DependencyProperty WordWrapProperty
-        //    = DependencyProperty.Register("WordWrap", typeof(bool), typeof(MainWindow),
-        //    new FrameworkPropertyMetadata(false));
-
-        //public bool UseSyntaxHighlighting { get => (bool)GetValue(UseSyntaxHighlightingProperty); set => SetValue(UseSyntaxHighlightingProperty, value); }
-
-        ///// <summary>The backing dependency property for <see cref="UseSyntaxHighlighting"/>. See the related property for details.</summary>
-        //public static DependencyProperty UseSyntaxHighlightingProperty
-        //    = DependencyProperty.Register(nameof(UseSyntaxHighlighting), typeof(bool), typeof(MainWindow),
-        //    new FrameworkPropertyMetadata(true));
-
-        //public bool HighlightCurrentLine { get => (bool)GetValue(HighlightCurrentLineProperty); set => SetValue(HighlightCurrentLineProperty, value); }
-
-        ///// <summary>The backing dependency property for <see cref="HighlightCurrentLine"/>. See the related property for details.</summary>
-        //public static DependencyProperty HighlightCurrentLineProperty
-        //    = DependencyProperty.Register(nameof(HighlightCurrentLine), typeof(bool), typeof(MainWindow),
-        //    new FrameworkPropertyMetadata(true));
 
         #endregion
 

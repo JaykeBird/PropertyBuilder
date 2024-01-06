@@ -89,7 +89,7 @@ namespace PropertyBuilderWPF
         // PropertyBuilder currently doesn't use the Qhuill settings system, so instead I'm storing the settings in the program's data folder
 
         /// <summary>
-        /// Load the settings from the specific settings file.
+        /// Load the settings from the specific settings file. If the settings file does not exist or cannot be read, then create a new Settings instance.
         /// </summary>
         public static void LoadSettings()
         {
