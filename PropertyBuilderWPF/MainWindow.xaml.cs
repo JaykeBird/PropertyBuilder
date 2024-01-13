@@ -149,7 +149,8 @@ namespace PropertyBuilderWPF
                 else if (csd.SelectedColorScheme.AccentMainColor.GetHexString() == "C8C8C8")
                 {
                     // dark theme
-                    ColorScheme cs = ColorScheme.CreateDarkTheme(ColorsHelper.GrayBlue);
+                    ColorScheme cs = ColorScheme.CreateDarkTheme(ColorsHelper.CreateFromHex("37557e"));
+                    cs.AccentBorderColor = ColorsHelper.CreateFromHex("5c8ed3");
                     cs.MenusUseAccent = true;
                     App.AppSettings.ColorScheme = cs;
                 }
