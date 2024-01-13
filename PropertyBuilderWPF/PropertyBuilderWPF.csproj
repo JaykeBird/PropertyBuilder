@@ -22,7 +22,7 @@
 		<None Remove="AvaloniaPropertyChanged.txt" />
 		<None Remove="Highlighting\CSharp.xshd" />
 		<None Remove="Highlighting\None.xshd" />
-		<None Remove="Images\ExitColor.png" />
+		<None Remove="Images\*.png" />
 		<None Remove="PerformAs.txt" />
 	</ItemGroup>
 
@@ -41,7 +41,7 @@
 	</ItemGroup>
 	
 	<ItemGroup>
-		<Resource Include="Images\ExitColor.png" />
+		<Resource Include="Images\*.png" />
 	</ItemGroup>
 
 	<ItemGroup>
