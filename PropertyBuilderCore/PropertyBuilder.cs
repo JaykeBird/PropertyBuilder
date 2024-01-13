@@ -342,7 +342,7 @@ namespace PropertyBuilder
             StringBuilder sb = new();
             sb.AppendLine($"private {typeName} _{fieldName} " + (string.IsNullOrEmpty(defVal) ? ";" : $" = {defVal};"));
             sb.AppendLine();
-            sb.AppendLine($"public {typeName} {propName} {{ get => _{propName}; " + (readOnly ? "private" : "") + $" set => SetAndRaise({propName}Property, ref _{fieldName}, value); }}");
+            sb.AppendLine($"public {typeName} {propName} {{ get => _{fieldName}; " + (readOnly ? "private" : "") + $" set => SetAndRaise({propName}Property, ref _{fieldName}, value); }}");
             sb.AppendLine();
             sb.AppendLine($"/// <summary>The backing direct property for <see cref=\"{propName}\"/>. See the related property for details.</summary>");
             sb.AppendLine($"public static readonly DirectProperty<{ownerName},{typeName}> {propName}Property");
@@ -384,7 +384,7 @@ namespace PropertyBuilder
 
             writer.WriteLine($"private {typeName} _{fieldName} " + (string.IsNullOrEmpty(defVal) ? ";" : $" = {defVal};"));
             writer.WriteLine();
-            writer.WriteLine($"public {typeName} {propName} {{ get => _{propName}; " + (readOnly ? "private" : "") + $" set => SetAndRaise({propName}Property, ref _{fieldName}, value); }}");
+            writer.WriteLine($"public {typeName} {propName} {{ get => _{fieldName}; " + (readOnly ? "private" : "") + $" set => SetAndRaise({propName}Property, ref _{fieldName}, value); }}");
             writer.WriteLine();
             writer.WriteLine($"/// <summary>The backing direct property for <see cref=\"{propName}\"/>. See the related property for details.</summary>");
             writer.WriteLine($"public static readonly DirectProperty<{ownerName},{typeName}> {propName}Property");
