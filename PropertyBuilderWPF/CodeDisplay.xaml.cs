@@ -110,12 +110,13 @@ namespace PropertyBuilderWPF
 
         public string GetEditorText() => editText.Text;
 
-        public bool ShowGenerateMenu { get => (bool)GetValue(ShowGenerateMenuProperty); set => SetValue(ShowGenerateMenuProperty, value); }
+        public bool ShowCopyButton { get => (bool)GetValue(ShowCopyButtonProperty); set => SetValue(ShowCopyButtonProperty, value); }
 
-        /// <summary>The backing dependency property for <see cref="ShowGenerateMenu"/>. See the related property for details.</summary>
-        public static readonly DependencyProperty ShowGenerateMenuProperty
-            = DependencyProperty.Register("ShowGenerateMenu", typeof(bool), typeof(CodeDisplay),
-            new FrameworkPropertyMetadata(false));
+        /// <summary>The backing dependency property for <see cref="ShowCopyButton"/>. See the related property for details.</summary>
+        public static readonly DependencyProperty ShowCopyButtonProperty
+            = DependencyProperty.Register("ShowCopyButton", typeof(bool), typeof(CodeDisplay),
+            new FrameworkPropertyMetadata(true));
+
 
         #region Code Editor Visuals
         public bool ShowLineNumbers { get => (bool)GetValue(ShowLineNumbersProperty); set => SetValue(ShowLineNumbersProperty, value); }

@@ -22,17 +22,7 @@
                              FontWeight="{Binding ElementName=control, Path=EditorFontWeight}" FontStyle="{Binding ElementName=control, Path=EditorFontStyle}"
                              HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" />
         </Border>
-        <StackPanel Grid.Row="1" Orientation="Horizontal" Height="24" Margin="3,5" >
-            <flat:FlatButton Margin="5,0" Content="Copy" Padding="12,2" x:Name="btnCopy" Click="btnCopy_Click" ColorScheme="{Binding ElementName=control, Path=ColorScheme}" UseAccentColors="True" />
-            <flat:MenuButton Margin="5,0" Content="Generate" Padding="12,2,4,2" x:Name="btnGenerate" ColorScheme="{Binding ElementName=control, Path=ColorScheme}"
-                             Visibility="{Binding ElementName=control, Path=ShowGenerateMenu, Converter={StaticResource btv}, FallbackValue=true}" >
-                <flat:MenuButton.Menu>
-                    <flat:ContextMenu>
-                        <MenuItem Header="Standard Event Handler" />
-                        <MenuItem Header="Changed Event" />
-                    </flat:ContextMenu>
-                </flat:MenuButton.Menu>
-            </flat:MenuButton>
-        </StackPanel>
+        <flat:FlatButton Margin="8,5" Content="Copy" Padding="12,2" x:Name="btnCopy" Click="btnCopy_Click" ColorScheme="{Binding ElementName=control, Path=ColorScheme}" 
+                             UseAccentColors="True" Visibility="{Binding ElementName=control, Path=ShowCopyButton, Converter={StaticResource btv}}" Grid.Row="1" HorizontalAlignment="Left" />
     </Grid>
 </UserControl>
