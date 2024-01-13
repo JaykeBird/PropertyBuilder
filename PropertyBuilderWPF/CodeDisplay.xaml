@@ -22,7 +22,12 @@
                              FontWeight="{Binding ElementName=control, Path=EditorFontWeight}" FontStyle="{Binding ElementName=control, Path=EditorFontStyle}"
                              HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" />
         </Border>
-        <flat:FlatButton Margin="8,5" Content="Copy" Padding="12,2" x:Name="btnCopy" Click="btnCopy_Click" ColorScheme="{Binding ElementName=control, Path=ColorScheme}" 
-                             UseAccentColors="True" Visibility="{Binding ElementName=control, Path=ShowCopyButton, Converter={StaticResource btv}}" Grid.Row="1" HorizontalAlignment="Left" />
+        <flat:FlatButton Margin="8,5" Padding="10,2" x:Name="btnCopy" Click="btnCopy_Click" ColorScheme="{Binding ElementName=control, Path=ColorScheme}" 
+                             UseAccentColors="True" Visibility="{Binding ElementName=control, Path=ShowCopyButton, Converter={StaticResource btv}}" Grid.Row="1" HorizontalAlignment="Left">
+            <StackPanel Orientation="Horizontal" >
+                <Image Height="16" Source="Images\CopyColor.png" Stretch="None" RenderOptions.BitmapScalingMode="NearestNeighbor" />
+                <TextBlock Margin="3,0" Text="Copy" />
+            </StackPanel>
+        </flat:FlatButton>
     </Grid>
 </UserControl>
