@@ -28,6 +28,7 @@ namespace PropertyBuilderWPF
 
             viewText.ColorScheme = cs;
             btnRemove.ColorScheme = cs;
+            pathClose.Fill = cs.ForegroundColor.ToBrush();
         }
 
         public string OwnerName { get => (string)GetValue(OwnerNameProperty); set => SetValue(OwnerNameProperty, value); }
