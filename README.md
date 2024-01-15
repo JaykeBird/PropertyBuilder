@@ -55,8 +55,9 @@ I believe this will make my workflow a little bit faster, especially when it com
 
 ## Future Plans
 
-1. Add support for other frameworks (MAUI, Uno, Eto) (will probably require some rethinking about the UI)
-2. Build an Avalonia GUI version of this (after Solid Shine UI 2.0 releases)
+1. Add option for creating a RoutedPropertyChangedEventHandler event when building a WPF DependencyProperty
+2. Add support for other frameworks (MAUI, Uno, Eto) (will probably require some rethinking about the UI)
+3. Build an Avalonia GUI version of this (after Solid Shine UI 2.0 releases)
 
 ## License / Credits
 
