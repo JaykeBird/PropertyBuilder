@@ -39,20 +39,21 @@ namespace PropertyBuilder
 
             sb.AppendLine();
             
-            // set up the XML comments for the dependency property, is annoying to add later lol
-            sb.AppendLine($"/// <summary>The backing dependency property for <see cref=\"{propName}\"/>. See the related property for details.</summary>"); // XML comment for dependency property
-            
             // now we'll set up the dependency property itself
             // if it's read-only, we'll need a public-facing DependencyProperty and a private DependencyPropertyKey (which can be used to still set the value)
             if (readOnly)
             {
-                sb.AppendLine($"public static readonly DependencyProperty {propName}Property = {propName}PropertyKey.DependencyProperty;"); // define public dependency property for read-only access
-                sb.AppendLine();
                 sb.AppendLine($"private static readonly DependencyPropertyKey {propName}PropertyKey");                                    // first line defining the internal dependency property key
                 sb.AppendLine($"    = DependencyProperty.RegisterReadOnly(nameof({propName}), typeof({typeName}), typeof({ownerName})" + (hasDefVal ? "," : ");")); // dependency property parameters
+                sb.AppendLine();
+                // set up the XML comments for the dependency property, is annoying to add later lol
+                sb.AppendLine($"/// <summary>The backing dependency property for <see cref=\"{propName}\"/>. See the related property for details.</summary>"); // XML comment for dependency property
+                sb.AppendLine($"public static readonly DependencyProperty {propName}Property = {propName}PropertyKey.DependencyProperty;"); // define public dependency property for read-only access
             }
             else
             {
+                // set up the XML comments for the dependency property, is annoying to add later lol
+                sb.AppendLine($"/// <summary>The backing dependency property for <see cref=\"{propName}\"/>. See the related property for details.</summary>"); // XML comment for dependency property
                 sb.AppendLine($"public static DependencyProperty {propName}Property");                                                                // first line defining the dependency property
                 sb.AppendLine($"    = DependencyProperty.Register(nameof({propName}), typeof({typeName}), typeof({ownerName})" + (hasDefVal ? "," : ");")); // dependency property parameters
             }
