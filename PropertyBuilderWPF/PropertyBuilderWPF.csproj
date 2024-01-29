@@ -47,7 +47,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="AvalonEdit" Version="6.3.0.90" />
-		<PackageReference Include="SolidShineUi" Version="1.9.7" />
+		<PackageReference Include="SolidShineUi" Version="1.9.6" />
 	</ItemGroup>
 
 	<ItemGroup>

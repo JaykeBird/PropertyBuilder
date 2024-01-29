@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:PropertyBuilderWPF"
              xmlns:flat="clr-namespace:SolidShineUi;assembly=SolidShineUi"
              mc:Ignorable="d" Height="180"
-             d:DesignHeight="180" d:DesignWidth="600" SelectOnClick="False" >
+             d:DesignHeight="180" d:DesignWidth="600" CanSelect="False" >
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="1*" />
