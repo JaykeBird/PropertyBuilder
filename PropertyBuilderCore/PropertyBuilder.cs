@@ -19,14 +19,14 @@ namespace PropertyBuilder
         /// <param name="handleValueChanges">whether to automatically include a handler for when this property's value changes</param>
         /// <param name="readOnly">whether this property is meant to be read-only; a private setter will be provided</param>
         /// <returns>Code for setting up a WPF DependencyProperty with the inputted values</returns>
-        public static string BuildWpfProperty(string propName, string typeName, string ownerName, string? defVal = null, bool readOnly = false, 
+        public static string BuildWpfProperty(string propName, string typeName, string ownerName, string? defVal = null, bool readOnly = false,
             WpfPropertyChangeHandler handleValueChanges = WpfPropertyChangeHandler.None)
         {
             // check if a default value is provided
             bool hasDefVal = !string.IsNullOrEmpty(defVal);
 
             StringBuilder sb = new();
-            
+
             // first, we want to generate the base C# property (the "{ get ...; set ...; }" part)
             if (readOnly)
             {
@@ -38,7 +38,7 @@ namespace PropertyBuilder
             }
 
             sb.AppendLine();
-            
+
             // now we'll set up the dependency property itself
             // if it's read-only, we'll need a public-facing DependencyProperty and a private DependencyPropertyKey (which can be used to still set the value)
             if (readOnly)
@@ -81,16 +81,24 @@ namespace PropertyBuilder
                 sb.AppendLine($"        d.{propName}Changed?.Invoke(o, e);");
                 sb.AppendLine("    }");
                 sb.AppendLine("}");
+
+                GeneratePropertyChangedEvent(ref sb);
+            }
+            else if (handleValueChanges == WpfPropertyChangeHandler.StandardRoutedEventCall)
+            {
+                // generate an OnPropertyChanged handler
                 sb.AppendLine();
-                // and now the PropertyChanged event
-                sb.AppendLine($"/// <summary>");
-                sb.AppendLine($"/// Raised when the <see cref=\"{propName}\"/> property is changed.");
-                sb.AppendLine($"/// </summary>");
-                sb.AppendLine($"#if NETCOREAPP");
-                sb.AppendLine($"        public event DependencyPropertyChangedEventHandler? {propName}Changed;");
-                sb.AppendLine($"#else");
-                sb.AppendLine($"        public event DependencyPropertyChangedEventHandler {propName}Changed;");
-                sb.AppendLine($"#endif");
+                sb.AppendLine($"private static void On{propName}Changed(DependencyObject d, DependencyPropertyChangedEventArgs e)");
+                sb.AppendLine("{");
+                sb.AppendLine($"    if (d is {ownerName} o)");
+                sb.AppendLine("    {");
+                sb.AppendLine($"        RoutedPropertyChangedEventArgs<{typeName}> re = new RoutedPropertyChangedEventArgs<{typeName}>(({typeName})e.OldValue, ({typeName})e.NewValue, {propName}ChangedEvent);");
+                sb.AppendLine("        re.Source = o;");
+                sb.AppendLine("        o.RaiseEvent(re);");
+                sb.AppendLine("    }");
+                sb.AppendLine("}");
+
+                GenerateRoutedPropertyChangedEvent(ref sb);
             }
             else if (handleValueChanges == WpfPropertyChangeHandler.Standard)
             {
@@ -100,25 +108,24 @@ namespace PropertyBuilder
                 sb.AppendLine("{");
                 sb.AppendLine($"    if (d is {ownerName} o)");
                 sb.AppendLine("    {");
-                sb.AppendLine("    ");
+                sb.AppendLine("        ");
                 sb.AppendLine("    }");
                 sb.AppendLine("}");
             }
             else if (handleValueChanges == WpfPropertyChangeHandler.PerformAsEventCall)
             {
-                // generate the PropertyChanged event
+                GeneratePropertyChangedEvent(ref sb);
+            }
+            else if (handleValueChanges == WpfPropertyChangeHandler.PerformAsRoutedEventCall)
+            {
+                GenerateRoutedPropertyChangedEvent(ref sb);
                 sb.AppendLine();
-                sb.AppendLine($"/// <summary>");
-                sb.AppendLine($"/// Raised when the <see cref=\"{propName}\"/> property is changed.");
-                sb.AppendLine($"/// </summary>");
-                sb.AppendLine($"#if NETCOREAPP");
-                sb.AppendLine($"        public event DependencyPropertyChangedEventHandler? {propName}Changed;");
-                sb.AppendLine($"#else");
-                sb.AppendLine($"        public event DependencyPropertyChangedEventHandler {propName}Changed;");
-                sb.AppendLine($"#endif");
-                // Only .NET Core / modern .NET supports nullability, where .NET Framework does not - this preprocessor directive makes that split
-                // those who are on .NET Core / modern .NET and not using the nullability feature can just remove this split and just use the one line
-                // but I didn't want to add that on as just another option here when 1) this is primarily built for my use and 2) there's already a number of options
+                sb.AppendLine($"private void On{propName}Changed(DependencyPropertyChangedEventArgs e)");
+                sb.AppendLine("{");
+                sb.AppendLine($"    RoutedPropertyChangedEventArgs<{typeName}> re = new RoutedPropertyChangedEventArgs<{typeName}>(({typeName})e.OldValue, ({typeName})e.NewValue, {propName}ChangedEvent);");
+                sb.AppendLine("    re.Source = this;");
+                sb.AppendLine("    RaiseEvent(re);");
+                sb.AppendLine("}");
             }
 
             return sb.ToString();
@@ -131,10 +138,49 @@ namespace PropertyBuilder
                     WpfPropertyChangeHandler.None => "",
                     WpfPropertyChangeHandler.Standard => $", On{propName}Changed",
                     WpfPropertyChangeHandler.StandardEventCall => $", On{propName}Changed",
+                    WpfPropertyChangeHandler.StandardRoutedEventCall => $", On{propName}Changed",
                     WpfPropertyChangeHandler.PerformAs => $", (d, e) => d.PerformAs<{ownerName}>((o) => )",
                     WpfPropertyChangeHandler.PerformAsEventCall => $", (d, e) => d.PerformAs<{ownerName}>((o) => o.{propName}Changed?.Invoke(o, e))",
+                    WpfPropertyChangeHandler.PerformAsRoutedEventCall => $", (d, e) => d.PerformAs<{ownerName}>((o) => )",
                     _ => "",
                 };
+            }
+
+            void GeneratePropertyChangedEvent(ref StringBuilder sb)
+            {
+                // generate the PropertyChanged event
+                sb.AppendLine();
+                sb.AppendLine("/// <summary>");
+                sb.AppendLine($"/// Raised when the <see cref=\"{propName}\"/> property is changed.");
+                sb.AppendLine("/// </summary>");
+                sb.AppendLine("#if NETCOREAPP");
+                sb.AppendLine($"        public event DependencyPropertyChangedEventHandler? {propName}Changed;");
+                sb.AppendLine("#else");
+                sb.AppendLine($"        public event DependencyPropertyChangedEventHandler {propName}Changed;");
+                sb.AppendLine("#endif");
+                // Only .NET Core / modern .NET supports nullability, where .NET Framework does not - this preprocessor directive makes that split
+                // those who are on .NET Core / modern .NET and not using the nullability feature can just remove this split and just use the one line
+                // but I didn't want to add that on as just another option here when 1) this is primarily built for my use and 2) there's already a number of options
+            }
+
+            void GenerateRoutedPropertyChangedEvent(ref StringBuilder sb)
+            {
+                // generate the PropertyChanged routed event
+                sb.AppendLine();
+                sb.AppendLine("/// <summary>");
+                sb.AppendLine($"/// The backing routed event object for <see cref=\"{propName}Changed\"/>. Please see the related event for details.");
+                sb.AppendLine("/// </summary>");
+                sb.AppendLine($"public static readonly RoutedEvent {propName}ChangedEvent = EventManager.RegisterRoutedEvent(");
+                sb.AppendLine($"    nameof({propName}Changed), RoutingStrategy.Bubble, typeof(RoutedPropertyChangedEventHandler<{typeName}>), typeof({ownerName}));");
+                sb.AppendLine();
+                sb.AppendLine("/// <summary>");
+                sb.AppendLine($"/// Raised when the <see cref=\"{propName}\"/> property is changed.");
+                sb.AppendLine("/// </summary>");
+                sb.AppendLine($"public event RoutedPropertyChangedEventHandler<{typeName}> {propName}Changed");
+                sb.AppendLine("{");
+                sb.AppendLine($"    add {{ AddHandler({propName}ChangedEvent, value); }}");
+                sb.AppendLine($"    remove {{ RemoveHandler({propName}ChangedEvent, value); }}");
+                sb.AppendLine("}");
             }
         }
 
@@ -377,7 +423,7 @@ namespace PropertyBuilder
         /// To see the difference between StyledProperties and DirectProperties, see <a href="https://docs.avaloniaui.net/docs/guides/custom-controls/how-to-create-advanced-custom-controls" 
         /// >this page in Avalonia's documentation</a>.
         /// </remarks>
-        public static void BuildAvaloniaDirectProperty(ref TextWriter writer, string propName, string typeName, string ownerName, string? defVal = null, 
+        public static void BuildAvaloniaDirectProperty(ref TextWriter writer, string propName, string typeName, string ownerName, string? defVal = null,
             string? fieldName = null, bool readOnly = false)
         {
             // generate a fieldName if one isn't put in - this field name is done by taking the property name and lowercasing the first letter
@@ -430,5 +476,13 @@ namespace PropertyBuilder
         /// Use Solid Shine UI's PerformAs extension method to raise a <c>{Property}Changed</c> event.
         /// </summary>
         PerformAsEventCall = 4,
+        /// <summary>
+        /// Generate a <c>On{Property}Changed</c> handler, that raises a <c>{Property}Changed</c> routed event.
+        /// </summary>
+        StandardRoutedEventCall = 5,
+        /// <summary>
+        /// Use Solid Shine UI's PerformAs extension method to raise a <c>{Property}Changed</c> routed event.
+        /// </summary>
+        PerformAsRoutedEventCall = 6,
     }
 }
