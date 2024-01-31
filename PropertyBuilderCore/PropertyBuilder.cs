@@ -366,7 +366,7 @@ namespace PropertyBuilder
         /// <param name="defVal">a default value to set this property to, if desired (for strings, please include the enclosing quote characters (<c>"value"</c>))</param>
         /// <returns>Code for setting up an Avalonia StyledProperty with the inputted values</returns>
         /// <remarks>
-        /// To handle value changes, override the protected method <c>OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)</c>
+        /// To handle value changes, use the DirectProperty's <c>Changed</c> property, or override the protected method <c>OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)</c>
         /// <para/>
         /// Note that there is not a read-only version of a StyledProperty; if you need a read-only value, you'll need to use a DirectProperty.
         /// To see the difference between StyledProperties and DirectProperties, see <a href="https://docs.avaloniaui.net/docs/guides/custom-controls/how-to-create-advanced-custom-controls" 
@@ -394,7 +394,7 @@ namespace PropertyBuilder
         /// <param name="defVal">a default value to set this property to, if desired (for strings, please include the enclosing quote characters (<c>"value"</c>))</param>
         /// <returns>Code for setting up an Avalonia StyledProperty with the inputted values</returns>
         /// <remarks>
-        /// To handle value changes, override the protected method <c>OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)</c>
+        /// To handle value changes, use the DirectProperty's <c>Changed</c> property, or override the protected method <c>OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)</c>.
         /// <para/>
         /// Note that there is not a read-only version of a StyledProperty; if you need a read-only value, you'll need to use a DirectProperty.
         /// To see the difference between StyledProperties and DirectProperties, see <a href="https://docs.avaloniaui.net/docs/guides/custom-controls/how-to-create-advanced-custom-controls" 
@@ -420,7 +420,7 @@ namespace PropertyBuilder
         /// <param name="defVal">a default value to set this property to, if desired (for strings, please include the enclosing quote characters (<c>"value"</c>))</param>
         /// <returns>Code for setting up a Avalonia DirectProperty with the inputted values</returns>
         /// <remarks>
-        /// To handle value changes, override the protected method <c>OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)</c>
+        /// To handle value changes, use the DirectProperty's <c>Changed</c> property, or override the protected method <c>OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)</c>.
         /// <para/>
         /// To see the difference between StyledProperties and DirectProperties, see <a href="https://docs.avaloniaui.net/docs/guides/custom-controls/how-to-create-advanced-custom-controls" 
         /// >this page in Avalonia's documentation</a>.
@@ -469,7 +469,7 @@ namespace PropertyBuilder
         /// <param name="defVal">a default value to set this property to, if desired (for strings, please include the enclosing quote characters (<c>"value"</c>))</param>
         /// <returns>Code for setting up a Avalonia DirectProperty with the inputted values</returns>
         /// <remarks>
-        /// To handle value changes, override the protected method <c>OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)</c>
+        /// To handle value changes, use the DirectProperty's <c>Changed</c> property, or override the protected method <c>OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)</c>
         /// <para/>
         /// To see the difference between StyledProperties and DirectProperties, see <a href="https://docs.avaloniaui.net/docs/guides/custom-controls/how-to-create-advanced-custom-controls" 
         /// >this page in Avalonia's documentation</a>.
