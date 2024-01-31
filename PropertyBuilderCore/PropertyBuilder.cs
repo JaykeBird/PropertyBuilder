@@ -92,7 +92,8 @@ namespace PropertyBuilder
                 sb.AppendLine("{");
                 sb.AppendLine($"    if (d is {ownerName} o)");
                 sb.AppendLine("    {");
-                sb.AppendLine($"        RoutedPropertyChangedEventArgs<{typeName}> re = new RoutedPropertyChangedEventArgs<{typeName}>(({typeName})e.OldValue, ({typeName})e.NewValue, {propName}ChangedEvent);");
+                sb.AppendLine($"        RoutedPropertyChangedEventArgs<{typeName}> re = new RoutedPropertyChangedEventArgs<{typeName}>");
+                sb.AppendLine($"            (({typeName})e.OldValue, ({typeName})e.NewValue, {propName}ChangedEvent);");
                 sb.AppendLine("        re.Source = o;");
                 sb.AppendLine("        o.RaiseEvent(re);");
                 sb.AppendLine("    }");
@@ -155,9 +156,9 @@ namespace PropertyBuilder
                 sb.AppendLine($"/// Raised when the <see cref=\"{propName}\"/> property is changed.");
                 sb.AppendLine("/// </summary>");
                 sb.AppendLine("#if NETCOREAPP");
-                sb.AppendLine($"        public event DependencyPropertyChangedEventHandler? {propName}Changed;");
+                sb.AppendLine($"    public event DependencyPropertyChangedEventHandler? {propName}Changed;");
                 sb.AppendLine("#else");
-                sb.AppendLine($"        public event DependencyPropertyChangedEventHandler {propName}Changed;");
+                sb.AppendLine($"    public event DependencyPropertyChangedEventHandler {propName}Changed;");
                 sb.AppendLine("#endif");
                 // Only .NET Core / modern .NET supports nullability, where .NET Framework does not - this preprocessor directive makes that split
                 // those who are on .NET Core / modern .NET and not using the nullability feature can just remove this split and just use the one line
@@ -297,7 +298,8 @@ namespace PropertyBuilder
                 writer.WriteLine();
                 writer.WriteLine($"private void On{propName}Changed(DependencyPropertyChangedEventArgs e)");
                 writer.WriteLine("{");
-                writer.WriteLine($"    RoutedPropertyChangedEventArgs<{typeName}> re = new RoutedPropertyChangedEventArgs<{typeName}>(({typeName})e.OldValue, ({typeName})e.NewValue, {propName}ChangedEvent);");
+                writer.WriteLine($"    RoutedPropertyChangedEventArgs<{typeName}> re = new RoutedPropertyChangedEventArgs<{typeName}>");
+                writer.WriteLine($"        (({typeName})e.OldValue, ({typeName})e.NewValue, {propName}ChangedEvent);");
                 writer.WriteLine("    re.Source = this;");
                 writer.WriteLine("    RaiseEvent(re);");
                 writer.WriteLine("}");
@@ -327,9 +329,9 @@ namespace PropertyBuilder
                 tw.WriteLine($"/// Raised when the <see cref=\"{propName}\"/> property is changed.");
                 tw.WriteLine("/// </summary>");
                 tw.WriteLine("#if NETCOREAPP");
-                tw.WriteLine($"        public event DependencyPropertyChangedEventHandler? {propName}Changed;");
+                tw.WriteLine($"    public event DependencyPropertyChangedEventHandler? {propName}Changed;");
                 tw.WriteLine("#else");
-                tw.WriteLine($"        public event DependencyPropertyChangedEventHandler {propName}Changed;");
+                tw.WriteLine($"    public event DependencyPropertyChangedEventHandler {propName}Changed;");
                 tw.WriteLine("#endif");
                 // Only .NET Core / modern .NET supports nullability, where .NET Framework does not - this preprocessor directive makes that split
                 // those who are on .NET Core / modern .NET and not using the nullability feature can just remove this split and just use the one line
