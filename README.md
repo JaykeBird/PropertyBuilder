@@ -28,6 +28,10 @@ Change the appearance of the program, or the appearance of the code displays.
 
 An about page that displays the credits and links to websites (like to here).
 
+### More Help
+
+For more information about how to use this tool directly, please refer to the [HELP_INFO.md](https://github.com/JaykeBird/PropertyBuilder/blob/main/HELP_INFO.md) file in this repository.
+
 ### Usage tip: Add as an External Tool in Visual Studio
 
 I've found it useful to add this tool as an External Tool in Visual Studio, so that you can quickly access it from the Tools menu. To get it set up for yourself, you can follow these steps:
@@ -41,7 +45,7 @@ I've found it useful to add this tool as an External Tool in Visual Studio, so t
 
 ## Project Structure
 
-The actual magic is in the [PropertyBuilder.cs](https://github.com/JaykeBird/PropertyBuilder/blob/master/PropertyBuilderCore/PropertyBuilder.cs) file in the PropertyBuilderCore project. If you're looking to reuse the actual property building code in your own project, this is really all you need. (Please do credit me if you use it though!)
+The actual magic is in the [PropertyBuilder.cs](https://github.com/JaykeBird/PropertyBuilder/blob/main/PropertyBuilderCore/PropertyBuilder.cs) file in the PropertyBuilderCore project. If you're looking to reuse the actual property building code in your own project, this is really all you need. (Please do credit me if you use it though!)
 
 The PropertyBuilderWPF project is just a little app that provides a GUI for interacting with the PropertyBuilder's code in various ways, and also includes some other resources.
 
