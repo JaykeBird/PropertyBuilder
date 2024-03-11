@@ -48,10 +48,10 @@ namespace PropertyBuilderWPF.ChangeTheme
                 item.Click += (s, e) => { ColorSchemeSelected(item, item.DisplayedColorScheme); };
             }
 
-            btnPreset1.DisplayedColorScheme = new ColorScheme(Colors.Peru);
+            btnPreset1.DisplayedColorScheme = new ColorScheme(ColorsHelper.CreateFromHex("8599db")); // Visual Studio Blue
             btnPreset2.DisplayedColorScheme = new ColorScheme(Colors.CornflowerBlue);
             btnPreset3.DisplayedColorScheme = new ColorScheme(Colors.Tomato);
-            btnPreset4.DisplayedColorScheme = new ColorScheme(Colors.LightGreen);
+            btnPreset4.DisplayedColorScheme = new ColorScheme(Colors.Peru);
             btnPreset5.DisplayedColorScheme = new ColorScheme(Colors.Goldenrod);
             btnPreset6.DisplayedColorScheme = new ColorScheme(Colors.Orange);
             btnPreset7.DisplayedColorScheme = new ColorScheme(Colors.Coral);
