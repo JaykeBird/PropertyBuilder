@@ -18,55 +18,56 @@ namespace PropertyBuilder
         /// <param name="defVal">a default value to set this property to, if desired (for strings, please include the enclosing quote characters (<c>"value"</c>))</param>
         /// <param name="handleValueChanges">whether to automatically include a handler for when this property's value changes</param>
         /// <param name="readOnly">whether this property is meant to be read-only; a private setter will be provided</param>
-        /// <returns>Code for setting up a WPF DependencyProperty with the inputted values</returns>
+        /// <returns>C# code that sets up a WPF DependencyProperty with the inputted values</returns>
         public static string BuildWpfProperty(string propName, string typeName, string ownerName, string? defVal = null, bool readOnly = false,
             WpfPropertyChangeHandler handleValueChanges = WpfPropertyChangeHandler.None)
         {
             // check if a default value is provided
             bool hasDefVal = !string.IsNullOrEmpty(defVal);
+            bool needsMetadata = hasDefVal || handleValueChanges != WpfPropertyChangeHandler.None;
 
             StringBuilder sb = new();
 
-            // first, we want to generate the base C# property (the "{ get ...; set ...; }" part)
-            if (readOnly)
+            if (readOnly) // determine if this is a standard get-set property, or only a read-only property (private set)
             {
+                // first, we want to generate the base C# property (the "{ get ...; set ...; }" part)
                 sb.AppendLine($"public {typeName} {propName} {{ get => ({typeName})GetValue({propName}Property); private set => SetValue({propName}PropertyKey, value); }}"); // read-only C# property
-            }
-            else
-            {
-                sb.AppendLine($"public {typeName} {propName} {{ get => ({typeName})GetValue({propName}Property); set => SetValue({propName}Property, value); }}"); // base C# property
-            }
-
-            sb.AppendLine();
-
-            // now we'll set up the dependency property itself
-            // if it's read-only, we'll need a public-facing DependencyProperty and a private DependencyPropertyKey (which can be used to still set the value)
-            if (readOnly)
-            {
-                sb.AppendLine($"private static readonly DependencyPropertyKey {propName}PropertyKey");                                    // first line defining the internal dependency property key
-                sb.AppendLine($"    = DependencyProperty.RegisterReadOnly(nameof({propName}), typeof({typeName}), typeof({ownerName})" + (hasDefVal ? "," : ");")); // dependency property parameters
                 sb.AppendLine();
-                // set up the XML comments for the dependency property, is annoying to add later lol
-                sb.AppendLine($"/// <summary>The backing dependency property for <see cref=\"{propName}\"/>. See the related property for details.</summary>"); // XML comment for dependency property
-                sb.AppendLine($"public static readonly DependencyProperty {propName}Property = {propName}PropertyKey.DependencyProperty;"); // define public dependency property for read-only access
+                // now we'll set up the read-only dependency property itself
+                // we'll need a private DependencyPropertyKey for internal use, and then later we'll add a public-facing DependencyProperty
+                sb.AppendLine($"private static readonly DependencyPropertyKey {propName}PropertyKey");                                                   // defining the internal dependency property key
+                sb.AppendLine($"    = DependencyProperty.RegisterReadOnly(nameof({propName}), typeof({typeName}), typeof({ownerName})" + (needsMetadata ? "," : ");")); // register the dependency property
             }
             else
             {
-                // set up the XML comments for the dependency property, is annoying to add later lol
+                // first, we want to generate the base C# property (the "{ get ...; set ...; }" part)
+                sb.AppendLine($"public {typeName} {propName} {{ get => ({typeName})GetValue({propName}Property); set => SetValue({propName}Property, value); }}"); // base C# property
+                sb.AppendLine();
+                // now we'll set up the dependency property itself
+                // set up the XML comments for the dependency property, it's annoying to add later lol
                 sb.AppendLine($"/// <summary>The backing dependency property for <see cref=\"{propName}\"/>. See the related property for details.</summary>"); // XML comment for dependency property
-                sb.AppendLine($"public static DependencyProperty {propName}Property");                                                                // first line defining the dependency property
-                sb.AppendLine($"    = DependencyProperty.Register(nameof({propName}), typeof({typeName}), typeof({ownerName})" + (hasDefVal ? "," : ");")); // dependency property parameters
+                sb.AppendLine($"public static DependencyProperty {propName}Property");                                                                          // defining the dependency property
+                sb.AppendLine($"    = DependencyProperty.Register(nameof({propName}), typeof({typeName}), typeof({ownerName})" + (needsMetadata ? "," : ");")); // register the dependency property
             }
 
-            // if we want to set a default value or add a handler for changes to the property's value, we'll need to add on a FrameworkPropertyMetadata
-            // (technically, a PropertyMetadata is just fine, but the FrameworkPropertyMetadata offers the ability to set some extra flags where/when needed)
-            if (hasDefVal || handleValueChanges != WpfPropertyChangeHandler.None)
+            // the FrameworkPropertyMetadata is used to define extra behaviors and other stuff for our property
+            // here, we'll use it to define the default value (if one is provided) and also add a handler that gets triggered when the value changes
+            // (technically, a PropertyMetadata is just fine, but the FrameworkPropertyMetadata offers the ability to set some extra flags if needed later)
+            if (needsMetadata)
             {
                 // we could technically get away without providing a default value, but here, I'll just set it to null
                 // technically, the best practice would be to use default(typeName), but I've just gotten used to using null
                 if (string.IsNullOrEmpty(defVal)) defVal = "null";
 
                 sb.AppendLine($"    new FrameworkPropertyMetadata({defVal}" + GeneratePropertyChangedHandler() + "));");
+            }
+
+            if (readOnly) // now, after the actual read-only property was registered, we'll define the public-facing dependency property
+            {
+                sb.AppendLine();
+                // set up the XML comments for the dependency property, it's annoying to add later lol
+                sb.AppendLine($"/// <summary>The backing dependency property for <see cref=\"{propName}\"/>. See the related property for details.</summary>"); // XML comment for dependency property
+                sb.AppendLine($"public static readonly DependencyProperty {propName}Property = {propName}PropertyKey.DependencyProperty;");  // define public dependency property for read-only access
             }
 
             // now if we want to build handler methods/events for value changes, let's add them on at the very end
@@ -161,8 +162,8 @@ namespace PropertyBuilder
                 sb.AppendLine($"    public event DependencyPropertyChangedEventHandler {propName}Changed;");
                 sb.AppendLine("#endif");
                 // Only .NET Core / modern .NET supports nullability, where .NET Framework does not - this preprocessor directive makes that split
-                // those who are on .NET Core / modern .NET and not using the nullability feature can just remove this split and just use the one line
-                // but I didn't want to add that on as just another option here when 1) this is primarily built for my use and 2) there's already a number of options
+                // if you're not targetting both .NET and .NET Framework, or aren't using nullability, you can just remove this split and just use the one line
+                // but I didn't want to add that on as another option when 1) this is primarily built for my use and 2) there's already SO MANY options/parameters here
             }
 
             void GenerateRoutedPropertyChangedEvent(ref StringBuilder sb)
@@ -175,6 +176,7 @@ namespace PropertyBuilder
                 sb.AppendLine($"public static readonly RoutedEvent {propName}ChangedEvent = EventManager.RegisterRoutedEvent(");
                 sb.AppendLine($"    nameof({propName}Changed), RoutingStrategy.Bubble, typeof(RoutedPropertyChangedEventHandler<{typeName}>), typeof({ownerName}));");
                 sb.AppendLine();
+                // here is the C# event for this routed event
                 sb.AppendLine("/// <summary>");
                 sb.AppendLine($"/// Raised when the <see cref=\"{propName}\"/> property is changed.");
                 sb.AppendLine("/// </summary>");
@@ -187,7 +189,7 @@ namespace PropertyBuilder
         }
 
         /// <summary>
-        /// Generate a WPF DependencyProperty.
+        /// Generate a WPF DependencyProperty, by writing the property code into a TextWriter.
         /// </summary>
         /// <param name="writer">the <see cref="TextWriter"/> to write to</param>
         /// <param name="propName">The name of the property</param>
@@ -196,52 +198,53 @@ namespace PropertyBuilder
         /// <param name="defVal">a default value to set this property to, if desired (for strings, please include the enclosing quote characters (<c>"value"</c>))</param>
         /// <param name="handleValueChanges">whether to automatically include a handler for when this property's value changes</param>
         /// <param name="readOnly">whether this property is meant to be read-only; a private setter will be provided</param>
-        /// <returns>Code for setting up a WPF DependencyProperty with the inputted values</returns>
         public static void BuildWpfProperty(ref TextWriter writer, string propName, string typeName, string ownerName, string? defVal = null, bool readOnly = false,
             WpfPropertyChangeHandler handleValueChanges = WpfPropertyChangeHandler.None)
         {
             // check if a default value is provided
             bool hasDefVal = !string.IsNullOrEmpty(defVal);
+            bool needsMetadata = hasDefVal || handleValueChanges != WpfPropertyChangeHandler.None;
 
-            // first, we want to generate the base C# property (the "{ get ...; set ...; }" part)
-            if (readOnly)
+            if (readOnly) // determine if this is a standard get-set property, or only a read-only property (private set)
             {
+                // first, we want to generate the base C# property (the "{ get ...; set ...; }" part)
                 writer.WriteLine($"public {typeName} {propName} {{ get => ({typeName})GetValue({propName}Property); private set => SetValue({propName}PropertyKey, value); }}"); // read-only C# property
-            }
-            else
-            {
-                writer.WriteLine($"public {typeName} {propName} {{ get => ({typeName})GetValue({propName}Property); set => SetValue({propName}Property, value); }}"); // base C# property
-            }
-
-            writer.WriteLine();
-
-            // set up the XML comments for the dependency property, is annoying to add later lol
-            writer.WriteLine($"/// <summary>The backing dependency property for <see cref=\"{propName}\"/>. See the related property for details.</summary>"); // XML comment for dependency property
-
-            // now we'll set up the dependency property itself
-            // if it's read-only, we'll need a public-facing DependencyProperty and a private DependencyPropertyKey (which can be used to still set the value)
-            if (readOnly)
-            {
-                writer.WriteLine($"public static readonly DependencyProperty {propName}Property = {propName}PropertyKey.DependencyProperty;"); // define public dependency property for read-only access
                 writer.WriteLine();
-                writer.WriteLine($"private static readonly DependencyPropertyKey {propName}PropertyKey");                                    // first line defining the internal dependency property key
-                writer.WriteLine($"    = DependencyProperty.RegisterReadOnly(nameof({propName}), typeof({typeName}), typeof({ownerName})" + (hasDefVal ? "," : ");")); // dependency property parameters
+                // now we'll set up the read-only dependency property itself
+                // we'll need a private DependencyPropertyKey for internal use, and then later we'll add a public-facing DependencyProperty
+                writer.WriteLine($"private static readonly DependencyPropertyKey {propName}PropertyKey");                                                   // defining the internal dependency property key
+                writer.WriteLine($"    = DependencyProperty.RegisterReadOnly(nameof({propName}), typeof({typeName}), typeof({ownerName})" + (needsMetadata ? "," : ");")); // register the dependency property
             }
             else
             {
-                writer.WriteLine($"public static DependencyProperty {propName}Property");                                                                // first line defining the dependency property
-                writer.WriteLine($"    = DependencyProperty.Register(nameof({propName}), typeof({typeName}), typeof({ownerName})" + (hasDefVal ? "," : ");")); // dependency property parameters
+                // first, we want to generate the base C# property (the "{ get ...; set ...; }" part)
+                writer.WriteLine($"public {typeName} {propName} {{ get => ({typeName})GetValue({propName}Property); set => SetValue({propName}Property, value); }}"); // base C# property
+                writer.WriteLine();
+                // now we'll set up the dependency property itself
+                // set up the XML comments for the dependency property, it's annoying to add later lol
+                writer.WriteLine($"/// <summary>The backing dependency property for <see cref=\"{propName}\"/>. See the related property for details.</summary>"); // XML comment for dependency property
+                writer.WriteLine($"public static DependencyProperty {propName}Property");                                                                          // defining the dependency property
+                writer.WriteLine($"    = DependencyProperty.Register(nameof({propName}), typeof({typeName}), typeof({ownerName})" + (needsMetadata ? "," : ");")); // register the dependency property
             }
 
-            // if we want to set a default value or add a handler for changes to the property's value, we'll need to add on a FrameworkPropertyMetadata
-            // (technically, a PropertyMetadata is just fine, but the FrameworkPropertyMetadata offers the ability to set some extra flags where/when needed)
-            if (hasDefVal || handleValueChanges != WpfPropertyChangeHandler.None)
+            // the FrameworkPropertyMetadata is used to define extra behaviors and other stuff for our property
+            // here, we'll use it to define the default value (if one is provided) and also add a handler that gets triggered when the value changes
+            // (technically, a PropertyMetadata is just fine, but the FrameworkPropertyMetadata offers the ability to set some extra flags if needed later)
+            if (needsMetadata)
             {
                 // we could technically get away without providing a default value, but here, I'll just set it to null
                 // technically, the best practice would be to use default(typeName), but I've just gotten used to using null
                 if (string.IsNullOrEmpty(defVal)) defVal = "null";
 
                 writer.WriteLine($"    new FrameworkPropertyMetadata({defVal}" + GeneratePropertyChangedHandler() + "));");
+            }
+
+            if (readOnly) // now, after the actual read-only property was registered, we'll define the public-facing dependency property
+            {
+                writer.WriteLine();
+                // set up the XML comments for the dependency property, it's annoying to add later lol
+                writer.WriteLine($"/// <summary>The backing dependency property for <see cref=\"{propName}\"/>. See the related property for details.</summary>"); // XML comment for dependency property
+                writer.WriteLine($"public static readonly DependencyProperty {propName}Property = {propName}PropertyKey.DependencyProperty;");  // define public dependency property for read-only access
             }
 
             // now if we want to build handler methods/events for value changes, let's add them on at the very end
@@ -334,8 +337,8 @@ namespace PropertyBuilder
                 tw.WriteLine($"    public event DependencyPropertyChangedEventHandler {propName}Changed;");
                 tw.WriteLine("#endif");
                 // Only .NET Core / modern .NET supports nullability, where .NET Framework does not - this preprocessor directive makes that split
-                // those who are on .NET Core / modern .NET and not using the nullability feature can just remove this split and just use the one line
-                // but I didn't want to add that on as just another option here when 1) this is primarily built for my use and 2) there's already a number of options
+                // if you're not targetting both .NET and .NET Framework, or aren't using nullability, you can just remove this split and just use the one line
+                // but I didn't want to add that on as another option when 1) this is primarily built for my use and 2) there's already SO MANY options/parameters here
             }
 
             void GenerateRoutedPropertyChangedEvent(ref TextWriter tw)
@@ -364,12 +367,11 @@ namespace PropertyBuilder
         /// </summary>
         /// <param name="propName">The name of the property</param>
         /// <param name="typeName">The property's type</param>
-        /// <param name="ownerName">The type of the object that will own this property</param>
+        /// <param name="ownerName">The type of the object that will own this property (generally, the class this property is being added into)</param>
         /// <param name="defVal">a default value to set this property to, if desired (for strings, please include the enclosing quote characters (<c>"value"</c>))</param>
-        /// <returns>Code for setting up an Avalonia StyledProperty with the inputted values</returns>
+        /// <returns>C# code that sets up an Avalonia StyledProperty with the inputted values</returns>
         /// <remarks>
-        /// To handle value changes, use the DirectProperty's <c>Changed</c> property, or override the protected method <c>OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)</c>
-        /// <para/>
+        /// To handle value changes, use the DirectProperty's <c>Changed</c> property, or override the protected method <c>OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)</c>.
         /// Note that there is not a read-only version of a StyledProperty; if you need a read-only value, you'll need to use a DirectProperty.
         /// To see the difference between StyledProperties and DirectProperties, see <a href="https://docs.avaloniaui.net/docs/guides/custom-controls/how-to-create-advanced-custom-controls" 
         /// >this page in Avalonia's documentation</a>.
@@ -387,17 +389,16 @@ namespace PropertyBuilder
         }
 
         /// <summary>
-        /// Generate an Avalonia StyledProperty. Use <see cref="BuildAvaloniaDirectProperty(ref TextWriter, string, string, string, string?, string?, bool)"/> for a DirectProperty.
+        /// Generate an Avalonia StyledProperty, by writing the property code into a TextWriter. 
+        /// Use <see cref="BuildAvaloniaDirectProperty(ref TextWriter, string, string, string, string?, string?, bool)"/> for a DirectProperty.
         /// </summary>
         /// <param name="writer">the <see cref="TextWriter"/> to write to</param>
         /// <param name="propName">The name of the property</param>
         /// <param name="typeName">The property's type</param>
-        /// <param name="ownerName">The type of the object that will own this property</param>
+        /// <param name="ownerName">The type of the object that will own this property (usually, the class this property is being added into)</param>
         /// <param name="defVal">a default value to set this property to, if desired (for strings, please include the enclosing quote characters (<c>"value"</c>))</param>
-        /// <returns>Code for setting up an Avalonia StyledProperty with the inputted values</returns>
         /// <remarks>
         /// To handle value changes, use the DirectProperty's <c>Changed</c> property, or override the protected method <c>OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)</c>.
-        /// <para/>
         /// Note that there is not a read-only version of a StyledProperty; if you need a read-only value, you'll need to use a DirectProperty.
         /// To see the difference between StyledProperties and DirectProperties, see <a href="https://docs.avaloniaui.net/docs/guides/custom-controls/how-to-create-advanced-custom-controls" 
         /// >this page in Avalonia's documentation</a>.
@@ -416,14 +417,13 @@ namespace PropertyBuilder
         /// </summary>
         /// <param name="propName">The name of the property</param>
         /// <param name="typeName">The property's type</param>
-        /// <param name="ownerName">The type of the object that will own this property</param>
-        /// <param name="fieldName">the name to use for the internal field; recommended to leave blank, to generate a default name based upon <paramref name="propName"/></param>
+        /// <param name="ownerName">The type of the object that will own this property (usually, the class this property is being added into)</param>
+        /// <param name="fieldName">the name to use for the internal field; keep this as <c>null</c> to generate a name based upon <paramref name="propName"/></param>
         /// <param name="readOnly">set if this property is only meant to be read-only; a private setter will be provided</param>
         /// <param name="defVal">a default value to set this property to, if desired (for strings, please include the enclosing quote characters (<c>"value"</c>))</param>
-        /// <returns>Code for setting up a Avalonia DirectProperty with the inputted values</returns>
+        /// <returns>C# code that sets up an Avalonia DirectProperty with the inputted values</returns>
         /// <remarks>
         /// To handle value changes, use the DirectProperty's <c>Changed</c> property, or override the protected method <c>OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)</c>.
-        /// <para/>
         /// To see the difference between StyledProperties and DirectProperties, see <a href="https://docs.avaloniaui.net/docs/guides/custom-controls/how-to-create-advanced-custom-controls" 
         /// >this page in Avalonia's documentation</a>.
         /// </remarks>
@@ -432,15 +432,15 @@ namespace PropertyBuilder
             // generate a fieldName if one isn't put in - this field name is done by taking the property name and lowercasing the first letter
             if (string.IsNullOrEmpty(propName))
             {
-                fieldName = "_propertyField";
+                fieldName = "propertyField";
             }
             else
             {
-                fieldName ??= string.Concat(propName.Substring(0, 1).ToLowerInvariant(), propName.AsSpan(1));
+                fieldName ??= string.Concat(propName[..1].ToLowerInvariant(), propName.AsSpan(1));
             }
 
             StringBuilder sb = new();
-            sb.AppendLine($"private {typeName} _{fieldName} " + (string.IsNullOrEmpty(defVal) ? ";" : $" = {defVal};"));
+            sb.AppendLine($"private {typeName} _{fieldName}" + (string.IsNullOrEmpty(defVal) ? ";" : $" = {defVal};"));
             sb.AppendLine();
             sb.AppendLine($"public {typeName} {propName} {{ get => _{fieldName}; " + (readOnly ? "private" : "") + $" set => SetAndRaise({propName}Property, ref _{fieldName}, value); }}");
             sb.AppendLine();
@@ -460,19 +460,17 @@ namespace PropertyBuilder
         }
 
         /// <summary>
-        /// Generate an Avalonia DirectProperty.
+        /// Generate an Avalonia DirectProperty, by writing the property code into a TextWriter.
         /// </summary>
         /// <param name="writer">the <see cref="TextWriter"/> to write to</param>
         /// <param name="propName">The name of the property</param>
         /// <param name="typeName">The property's type</param>
-        /// <param name="ownerName">The type of the object that will own this property</param>
-        /// <param name="fieldName">the name to use for the internal field; recommended to leave blank, to generate a default name based upon <paramref name="propName"/></param>
+        /// <param name="ownerName">The type of the object that will own this property (usually, the class this property is being added into)</param>
+        /// <param name="fieldName">the name to use for the internal field; keep this as <c>null</c> to generate a name based upon <paramref name="propName"/></param>
         /// <param name="readOnly">set if this property is only meant to be read-only; a private setter will be provided</param>
         /// <param name="defVal">a default value to set this property to, if desired (for strings, please include the enclosing quote characters (<c>"value"</c>))</param>
-        /// <returns>Code for setting up a Avalonia DirectProperty with the inputted values</returns>
         /// <remarks>
-        /// To handle value changes, use the DirectProperty's <c>Changed</c> property, or override the protected method <c>OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)</c>
-        /// <para/>
+        /// To handle value changes, use the DirectProperty's <c>Changed</c> property, or override the protected method <c>OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)</c>.
         /// To see the difference between StyledProperties and DirectProperties, see <a href="https://docs.avaloniaui.net/docs/guides/custom-controls/how-to-create-advanced-custom-controls" 
         /// >this page in Avalonia's documentation</a>.
         /// </remarks>
@@ -480,12 +478,22 @@ namespace PropertyBuilder
             string? fieldName = null, bool readOnly = false)
         {
             // generate a fieldName if one isn't put in - this field name is done by taking the property name and lowercasing the first letter
-            fieldName ??= string.Concat(propName.Substring(0, 1).ToLowerInvariant(), propName.AsSpan(1));
+            if (string.IsNullOrEmpty(propName))
+            {
+                fieldName = "propertyField";
+            }
+            else
+            {
+                fieldName ??= string.Concat(propName[..1].ToLowerInvariant(), propName.AsSpan(1));
+            }
 
-            writer.WriteLine($"private {typeName} _{fieldName} " + (string.IsNullOrEmpty(defVal) ? ";" : $" = {defVal};"));
+            // start with writing the internal field
+            writer.WriteLine($"private {typeName} _{fieldName}" + (string.IsNullOrEmpty(defVal) ? ";" : $" = {defVal};"));
             writer.WriteLine();
+            // now, the C# property
             writer.WriteLine($"public {typeName} {propName} {{ get => _{fieldName}; " + (readOnly ? "private" : "") + $" set => SetAndRaise({propName}Property, ref _{fieldName}, value); }}");
             writer.WriteLine();
+            // finally, let's set up and register the direct property
             writer.WriteLine($"/// <summary>The backing direct property for <see cref=\"{propName}\"/>. See the related property for details.</summary>");
             writer.WriteLine($"public static readonly DirectProperty<{ownerName},{typeName}> {propName}Property");
             writer.Write($"    = AvaloniaProperty.RegisterDirect<{ownerName}, {typeName}>(nameof({propName}), (s) => s.{propName}" + (readOnly ? "" : $", (s, v) => s.{propName} = v"));
@@ -504,7 +512,11 @@ namespace PropertyBuilder
     /// Set the type of property value change handler to generate with a WPF DependencyProperty.
     /// </summary>
     /// <remarks>
-    /// See this code file to see Solid Shine UI's PerformAs extension method:
+    /// These handlers are used to execute code (and/or raise events) when the property's value has changed. The same results can be achieved with all of these,
+    /// the only difference being in semantics and structure. 
+    /// <para/>
+    /// For Solid Shine UI 2.0, I made a small extension method named PerformAs which helps to generate cleaner, shorter code.
+    /// See this code file for the PerformAs extension method:
     /// <a href="https://github.com/JaykeBird/ssui/blob/main/SolidShineUi/Utils/BaseExtensions.cs">Utils/BaseExtensions.cs</a>
     /// </remarks>
     public enum WpfPropertyChangeHandler
