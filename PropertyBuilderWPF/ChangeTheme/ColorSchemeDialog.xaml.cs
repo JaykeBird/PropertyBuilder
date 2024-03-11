@@ -49,9 +49,9 @@ namespace PropertyBuilderWPF.ChangeTheme
             }
 
             btnPreset1.DisplayedColorScheme = new ColorScheme(ColorsHelper.CreateFromHex("8599db")); // Visual Studio Blue
-            btnPreset2.DisplayedColorScheme = new ColorScheme(Colors.CornflowerBlue);
+            btnPreset2.DisplayedColorScheme = new ColorScheme(Colors.Peru);
             btnPreset3.DisplayedColorScheme = new ColorScheme(Colors.Tomato);
-            btnPreset4.DisplayedColorScheme = new ColorScheme(Colors.Peru);
+            btnPreset4.DisplayedColorScheme = new ColorScheme(Colors.CornflowerBlue);
             btnPreset5.DisplayedColorScheme = new ColorScheme(Colors.Goldenrod);
             btnPreset6.DisplayedColorScheme = new ColorScheme(Colors.Orange);
             btnPreset7.DisplayedColorScheme = new ColorScheme(Colors.Coral);
